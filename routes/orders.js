@@ -2,11 +2,14 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/order');
+const Product = require('../models/product');
+const { check, validationResult } = require('express-validator/check');
 
 //-----------------------------------------Routes
-//Home Orders
+//-------------------------------Home Orders
 router.get('/',(req,res,next)=>{
 	Order.find({})
+	.populate('product','name')
 	.then((orders)=>{
 		res.status(200);
 		res.json({
@@ -27,30 +30,63 @@ router.get('/',(req,res,next)=>{
 	.catch(next);
 });
 
-//Post Order
-router.post('/',(req,res,next)=>{
-	Order.create(req.body)
-	.then((order)=>{
-		res.status(201);
-		res.json({
-			Order_Created:order,
-			Orders:{
-				url:`http://localhost:5500/orders`
-			}
-		});
+//---------------------------------Post Order
+router.post('/',
+	[
+		check('product',"'product' field is required").trim().isLength({min:5}),
+		check('quantity').trim().exists().withMessage("'quantity field is required").isInt({min:1})
+	]
+	,(req,res,next)=>{
+		const errors = validationResult(req);
+		if(!errors.isEmpty()){return res.status(422).json({Errors:errors.mapped()});}
+	Product.findById(req.body.product)
+	.then(productt=>{
+		if(productt){
+			Order.create(req.body)
+			.then((order)=>{
+				res.status(201);
+				res.json({
+					Order_Created:order,
+					Orders:{
+						url:`http://localhost:5500/orders`
+					}
+				});
+			})
+			.catch(next);
+		}
+		else{
+			res.status(404);
+			res.json({
+				Message:`Product not found with ID:${req.body.product}`
+			});
+		}
 	})
 	.catch(next);
 });
 
-//Find order
+//----------------------------------Find order
 router.get('/:orderId',(req,res,next)=>{
-	res.status(200).json({
-		message:'Order details',
-		orderId:req.params.orderId
-	});
+	Order.findById(req.params.orderId)
+	.populate('product')
+	.then(order=>{
+		if(order){
+			res.status(200);
+			res.json({
+				Find_by_ID:req.params.orderId,
+				Order:order
+			});
+		}
+		else{
+			res.status(404);
+			res.json({
+				Message:`There is no orders with ID:${req.params.orderId}`
+			});
+		}
+	})
+	.catch(next);
 });
 
-//Delete Order
+//-----------------------------------Delete Order
 router.delete('/:orderId',(req,res,next)=>{
 	Order.findByIdAndRemove(req.params.orderId)
 	.then((order)=>{
@@ -64,5 +100,5 @@ router.delete('/:orderId',(req,res,next)=>{
 	.catch(next);
 });
 
-//Export Module
+//------------------------------------Export Module
 module.exports=router;

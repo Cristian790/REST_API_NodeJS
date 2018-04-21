@@ -35,7 +35,7 @@ router.get('/:productId',(req,res,next)=>{
 		else{
 			res.status(404);
 			res.json({
-				Message:`Not valid entry found for ID: ${req.params.productId}`
+				Message:`Not entries found for ID: ${req.params.productId}`
 			});
 		}
 		

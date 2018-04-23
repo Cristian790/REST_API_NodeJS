@@ -20,7 +20,7 @@ router.get('/',(req,res,next)=>{
 					product:order.product,
 					quantity:order.quantity,
 					request:{
-						type:'PATCH',
+						type:'DELETE',
 						url:`http://localhost:5500/orders/${order._id}`
 					}
 				}

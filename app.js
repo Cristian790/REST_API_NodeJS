@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const config = require('./config/database');
+const path = require('path');
 
 //------------------------------------------Import Routes
 const productRoutes = require('./routes/products');
@@ -24,6 +25,8 @@ mongoose.Promise=global.Promise;
 //-------------------------------------------Middleware
 //Morgan
 app.use(morgan('dev'));
+//Public folder
+app.use(express.static(path.join(__dirname, 'public')));
 //Body Parser
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -61,7 +64,7 @@ app.use((req,res,next)=>{
 app.use((err,req,res,next)=>{
 	res.status(err.status || 500);
 	res.json({
-		Error:err
+		Error:err.message
 	});
 });
 

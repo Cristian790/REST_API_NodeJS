@@ -9,6 +9,7 @@ const path = require('path');
 //------------------------------------------Import Routes
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
+const userRoutes = require('./routes/users');
 
 //------------------------------------------Init variables
 const app = express();
@@ -51,6 +52,8 @@ app.use((req,res,next)=>{
 app.use('/products',productRoutes);
 //Orders route
 app.use('/orders',orderRoutes);
+//Users route
+app.use('/users',userRoutes);
 
 
 //-------------------------- Error Handling
@@ -62,7 +65,7 @@ app.use((req,res,next)=>{
 });
 //All errors
 app.use((err,req,res,next)=>{
-	res.status(err.status || 500);
+	res.status(err.status || 400);
 	res.json({
 		Error:err.message
 	});

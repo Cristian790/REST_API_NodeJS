@@ -11,8 +11,11 @@ const OrderSchema= new Schema({
 		type:Schema.Types.ObjectId,
 		ref:'Product',
 		required:[true,'Product Id is required']
-	}
-});
+	}},
+	{
+    	timestamps: true
+    }
+);
 
 const Order = mongoose.model('Order',OrderSchema);
 module.exports=Order;

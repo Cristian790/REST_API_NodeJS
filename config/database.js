@@ -1,4 +1,4 @@
 module.exports = {
-	database:'mongodb://localhost:27017/rest_shop',
+	database:'mongodb://admin:1234Qwer@ds259109.mlab.com:59109/rest_shop',
 	secret:'lorem ipsum'
 }

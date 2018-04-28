@@ -106,7 +106,7 @@ exports.products_delete = (req,res,next)=>{
 	.then((product)=>{
 		if(product){
 			fs.unlink(product.productImage,(e)=>{
-				console.log(e);
+				if(e) return console.log(e);
 			});
 			res.status(200);
 			res.json({

@@ -4,10 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.user_signup = (req,res,next)=>{
-		const errors = validationResult(req);
-		if(!errors.isEmpty()){
-			return res.status(422).json({errors:errors.mapped()});
-		}
+	const errors = validationResult(req);
+	if(!errors.isEmpty()){
+		return res.status(422).json({errors:errors.mapped()});
+	}
 	User.findOne({email:req.body.email})
 	.then(user=>{
 		console.log('User exists?:',user);
@@ -18,21 +18,21 @@ exports.user_signup = (req,res,next)=>{
 		}
 		else{
 			bcrypt.hash(req.body.password,10,(err,hash)=>{
-			if(err){return res.status(500).json({Error:err.message});}
-			else{
-				User.create({
-					email:req.body.email,
-					password:hash
-				})
-				.then(user=>{
-					res.status(201).json({
-						Message:'User_Created'
-					});
-					console.log(user);
-				})
-				.catch(next);
-			}
-		});
+				if(err){return res.status(500).json({Error:err.message});}
+				else{
+					User.create({
+						email:req.body.email,
+						password:hash
+					})
+					.then(user=>{
+						res.status(201).json({
+							Message:'User_Created'
+						});
+						console.log(user);
+					})
+					.catch(next);
+				}
+			});
 		}
 	})
 	.catch();	
@@ -46,6 +46,7 @@ exports.user_login = (req,res,next)=>{
 		})}
 		else{
 			bcrypt.compare(req.body.password,user.password,(err,result)=>{
+				console.log(req.body.password,result);
 				if(err){
 					return res.status(401).json({
 						Message:'Auth Failed'

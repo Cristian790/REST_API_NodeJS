@@ -8,7 +8,6 @@ const UsersController = require('../controllers/users');
 
 
 router.post('/signup',
-	checkAuth,
 	[
 		check('email').isEmail().withMessage('Must be an email'),
 		check('password').isLength({min:8}).withMessage('Password must be at least 8chars long')

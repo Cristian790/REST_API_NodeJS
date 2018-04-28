@@ -20,6 +20,8 @@ mongoose.connect(config.database);
 let db = mongoose.connection;
 db.once('open',()=>console.log('Connected to MongoDB'));
 db.on('error',err=>console.log(err));
+
+//-------------------------------------------Declare mongoose promise as global
 mongoose.Promise=global.Promise;
 
 

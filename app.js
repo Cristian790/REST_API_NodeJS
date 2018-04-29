@@ -18,11 +18,11 @@ const port = 5500;
 //------------------------------------------Connect Database
 mongoose.connect(config.database);
 let db = mongoose.connection;
-db.once('open',()=>console.log('Connected to MongoDB'));
-db.on('error',err=>console.log(err));
+db.once('open', () => console.log('Connected to MongoDB'));
+db.on('error', err => console.log(err));
 
 //-------------------------------------------Declare mongoose promise as global
-mongoose.Promise=global.Promise;
+mongoose.Promise = global.Promise;
 
 
 //-------------------------------------------Middleware
@@ -31,18 +31,18 @@ app.use(morgan('dev'));
 //Public folder
 app.use(express.static(path.join(__dirname, 'public')));
 //Body Parser
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //-------------------------CORS
-app.use((req,res,next)=>{
-	res.header('Access-Control-Allow-Origin','*');
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', '*');
 	res.header(
 		"Access-Control-Allow-Headers",
 		"Origin-X-Requested-With,Content-Type,Accept,Authorization"
-		);
-	if(req.method === 'OPTIONS'){
-		res.header('Access-Control-Allow-Methods','PUT,POST,PATCH,DELETE,GET');
+	);
+	if (req.method === 'OPTIONS') {
+		res.header('Access-Control-Allow-Methods', 'PUT,POST,PATCH,DELETE,GET');
 		return res.status(200).json({});
 	}
 	next();
@@ -51,27 +51,27 @@ app.use((req,res,next)=>{
 
 //---------------------------Route Handling
 //Products route
-app.use('/products',productRoutes);
+app.use('/products', productRoutes);
 //Orders route
-app.use('/orders',orderRoutes);
+app.use('/orders', orderRoutes);
 //Users route
-app.use('/users',userRoutes);
+app.use('/users', userRoutes);
 
 
 //-------------------------- Error Handling
 //Not Found Error
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
 	const error = new Error('Not Found');
-	error.status=404;
+	error.status = 404;
 	next(error);
 });
 //All errors
-app.use((err,req,res,next)=>{
+app.use((err, req, res) => {
 	res.status(err.status || 400);
 	res.json({
-		Error:err.message
+		Error: err.message
 	});
 });
 
 //----------------------------------------------Init server on port
-app.listen(port,()=>{console.log(`Server running on port ${port}`);});
+app.listen(port, () => { console.log(`Server running on port ${port}`); });
